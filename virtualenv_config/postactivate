@@ -1,0 +1,8 @@
+#!/bin/bash
+# This hook is run after this virtualenv is activated.
+# This script is also used by Upstart in production
+
+export DJANGO_SETTINGS_MODULE=icommons_lti_tools.settings.local
+export DJANGO_DB_PASSWORD='changeme'
+export CIPHER_KEY='changeme'
+export DJANGO_SECRET_KEY='changeme'

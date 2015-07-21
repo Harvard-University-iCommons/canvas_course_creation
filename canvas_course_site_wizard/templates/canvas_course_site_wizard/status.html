@@ -1,0 +1,39 @@
+{% extends "icommons_ui/base_ext.html" %}
+
+{% block page_title %} Canvas Course Site Wizard {% endblock page_title %}
+
+{% block content %}
+
+    {% if job_succeeded %}
+        <h1>Success!</h1>
+        <p>Your new Canvas course site has been created and is ready for you at:
+            <br />
+            <a href="{{canvas_course_url}}">{{canvas_course_url}}</a>
+        </p>
+        <p>
+            Resources for getting started with your site:
+            <a href="http://tlt.harvard.edu/getting-started">http://tlt.harvard.edu/getting-started</a>
+        </p>
+    {% elif job_failed %}
+        <h1>Oops!</h1>
+        <p>Sadly, there was a problem. Please notify your local academic support staff:</p>
+        <ul>
+          <li>DCE/Summer: AcademicTechnology@dce.harvard.edu</li>
+          <li>FAS: atg@fas.harvard.edu</li>
+          <li>GSD: klau@gsd.harvard.edu</li>
+          <li>GSE: it_onestop@gse.harvard.edu</li>
+          <li>HDS: coursesites@hds.harvard.edu</li>
+          <li>HKS: ithelp@hks.harvard.edu</li>
+          <li>HLS: ask@edtech.libanswers.com</li>
+          <li>HMS: CET@hms.harvard.edu</li>
+          <li>HSPH: mets@hsph.harvard.edu</li>
+        </ul>
+    {% else %}
+        <h1>Almost there!</h1>
+        <p>Your course site is being created.
+        An email will be sent to you when the 
+        site is ready.</p>
+        
+    {% endif %}
+
+{% endblock content %}

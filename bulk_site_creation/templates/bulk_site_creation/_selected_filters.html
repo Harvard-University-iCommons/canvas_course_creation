@@ -1,0 +1,12 @@
+{% load collections %}
+
+
+<script>
+    window.globals = window.globals || {};
+    window.globals.bulk_site_creation_filters = {
+        school: '{{ filters|get_value:"school" }}',
+        term: '{{ filters|get_value:"term" }}',
+        department: '{{ filters|get_value:"department" }}',
+        course_group: '{{ filters|get_value:"course_group" }}'
+    };
+</script>

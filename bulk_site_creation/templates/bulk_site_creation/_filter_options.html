@@ -1,0 +1,10 @@
+{% load json_filters %}
+
+
+<script>
+    window.globals = window.globals || {};
+    window.globals.bulk_site_creation_schools = {{ schools|jsonify }};
+    window.globals.bulk_site_creation_terms = {{ terms|jsonify }};
+    window.globals.bulk_site_creation_departments = {{ departments|jsonify }};
+    window.globals.bulk_site_creation_course_groups = {{ course_groups|jsonify }};
+</script>

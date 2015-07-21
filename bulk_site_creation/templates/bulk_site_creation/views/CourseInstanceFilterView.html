@@ -1,0 +1,29 @@
+{% load static %}
+
+<form ng-controller="CourseInstanceFilterController">
+    <fieldset>
+        <label for="schoolSelect" class="block">School:</label>
+        <select id="schoolSelect" ng-cloak ng-if="courseInstanceFilterModel.isFilterSelectable('school')" ng-model="courseInstanceFilterModel.filters.school" ng-options="s.id as s.name for s in courseInstanceFilterModel.filterOptions.school" ng-change="handleSchoolSelected()"></select>
+        <span ng-cloak ng-if="!courseInstanceFilterModel.isFilterSelectable('school')">{% verbatim %}{{ courseInstanceFilterModel.getSelectedFilterName('school') }}{% endverbatim %}</span>
+    </fieldset>
+    <fieldset>
+        <div ng-cloak ng-show="courseInstanceFilterModel.loading.term">
+            <img src="{% static 'images/ajax-loader-small.gif' %}" class="select-loading"/>
+        </div>
+        <div ng-cloak ng-show="showFilter('school', 'term')">
+            <label for="termSelect" class="block">Academic Term:</label>
+            <select id="termSelect" ng-cloak ng-if="courseInstanceFilterModel.isFilterSelectable('term')" ng-model="courseInstanceFilterModel.filters.term" ng-options="t.id as t.name for t in courseInstanceFilterModel.filterOptions.term" ng-change="handleTermSelected()"></select>
+            <span ng-cloak ng-if="!courseInstanceFilterModel.isFilterSelectable('term')">{% verbatim %}{{ courseInstanceFilterModel.getSelectedFilterName('term') }}{% endverbatim %}</span>
+        </div>
+    </fieldset>
+    <fieldset ng-cloak ng-show="showFilter('term', 'department')">
+        <label for="termSelect" class="block">Department:</label>
+        <select id="departmentSelect" ng-model="courseInstanceFilterModel.filters.department" ng-options="d.id as d.name for d in courseInstanceFilterModel.filterOptions.department" ng-change="handleDepartmentSelected()" ng-disabled="courseInstanceFilterModel.getSelectedFilterId('course_group')"></select>
+        <span ng-cloak ng-if="!courseInstanceFilterModel.isFilterSelectable('term')">{% verbatim %}{{ courseInstanceFilterModel.getSelectedFilterName('term') }}{% endverbatim %}</span>
+    </fieldset>
+    <fieldset ng-cloak ng-show="showFilter('term', 'course_group')">
+        <label for="courseGroupSelect" class="block">Course Group:</label>
+        <select id="courseGroupSelect" ng-model="courseInstanceFilterModel.filters.course_group" ng-options="cg.id as cg.name for cg in courseInstanceFilterModel.filterOptions.course_group" ng-change="handleCourseGroupSelected()" ng-disabled="courseInstanceFilterModel.getSelectedFilterId('department')"></select>
+        <span ng-cloak ng-if="!courseInstanceFilterModel.isFilterSelectable('course_group')">{% verbatim %}{{ courseInstanceFilterModel.getSelectedFilterName('term') }}{% endverbatim %}</span>
+    </fieldset>
+</form>

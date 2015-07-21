@@ -1,0 +1,88 @@
+{% extends 'bulk_site_creation/base.html' %}
+
+{% load static %}
+{% load collections %}
+{% load django_helpers %}
+
+
+{% block css %}
+    <link rel="stylesheet" type="text/css" href="{% static 'datatables-1.10.7/media/css/jquery.dataTables.min.css' %}" media="screen"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'datatables-bootstrap3/BS3/assets/css/datatables.css' %}" media="screen"/>
+{% endblock css %}
+
+{% block js %}
+    <script src="{% static 'datatables-1.10.7/media/js/jquery.dataTables.js' %}"></script>
+    <script src="{% static 'datatables-bootstrap3/BS3/assets/js/datatables.js' %}"></script>
+    <script>
+        window.globals.STATIC_URL = '{% settings_value "STATIC_URL" %}';
+    </script>
+    {% include 'bulk_site_creation/_selected_filters.html' %}
+    {% include 'bulk_site_creation/_filter_options.html' %}
+    <script src="{% static 'bulk_site_creation/js/app.js' %}"></script>
+    <script src="{% static 'bulk_site_creation/js/models/ErrorModel.js' %}"></script>
+    <script src="{% static 'bulk_site_creation/js/models/CourseInstanceFilterModel.js' %}"></script>
+    <script src="{% static 'bulk_site_creation/js/models/CourseInstanceModel.js' %}"></script>
+    <script src="{% static 'bulk_site_creation/js/controllers/IndexController.js' %}"></script>
+    <script src="{% static 'bulk_site_creation/js/controllers/ErrorController.js' %}"></script>
+    <script src="{% static 'bulk_site_creation/js/controllers/CourseInstanceFilterController.js' %}"></script>
+{% endblock js %}
+
+{% block body %}
+<body class="lti-tool" role="application" ng-app="app" ng-controller="IndexController">
+    <header>
+        <h1><a href="{% url 'bulk_site_creation:index' %}">Canvas Site Creator</a></h1>
+    </header>
+    {% include 'bulk_site_creation/views/ErrorView.html' %}
+    <main class="float-left col-60">
+        {% include 'bulk_site_creation/views/CourseInstanceFilterView.html' %}
+        <div ng-cloak ng-show="showSummaryLoading()">
+            <img src="{% static 'images/ajax-loader-large.gif' %}"/>
+        </div>
+        <div ng-cloak ng-show="showSummary()">
+            <h2>
+                <ng-pluralize count="courseInstanceModel.totalCourses"
+                              when="{'0': 'There are 0 courses in this term:',
+                                     '1': 'There is 1 course in this term:',
+                                     'other': 'There are {} courses in this term:'}">
+                </ng-pluralize>
+            </h2>
+            <ul>
+                <li>
+                    <ng-pluralize count="courseInstanceModel.totalCoursesWithCanvasSite"
+                              when="{'0': '0 courses with Canvas sites ',
+                                     '1': '1 course with a Canvas site ',
+                                     'other': '{} courses with Canvas sites '}">
+                    </ng-pluralize>
+                    (<ng-pluralize count="courseInstanceModel.totalCoursesWithCanvasSiteWithISite"
+                              when="{'0': '0 iSites, ',
+                                     '1': '1 iSites, ',
+                                     'other': '{} iSites, '}">
+                    </ng-pluralize>
+                    {% verbatim %}
+                    {{ courseInstanceModel.totalCoursesWithCanvasSiteWithExternal }} external)
+                    {% endverbatim %}
+                </li>
+                <li>
+                    <ng-pluralize count="courseInstanceModel.totalCoursesWithoutCanvasSite"
+                              when="{'0': '0 courses without Canvas sites ',
+                                     '1': '1 course without a Canvas site ',
+                                     'other': '{} courses without Canvas sites '}">
+                    </ng-pluralize>
+                    (<ng-pluralize count="courseInstanceModel.totalCoursesWithoutCanvasSiteWithISite"
+                              when="{'0': '0 iSites, ',
+                                     '1': '1 iSites, ',
+                                     'other': '{} iSites, '}">
+                    </ng-pluralize>
+                    {% verbatim %}
+                    {{ courseInstanceModel.totalCoursesWithoutCanvasSiteWithExternal }} external)
+                    {% endverbatim %}
+                    <button type="button" class="btn btn-submit" id="createSitesButton" ng-disabled="createDisabled()" ng-click="handleCreate($event)" data-href="{% url 'bulk_site_creation:course_selection' %}">Create Canvas Sites</button></li>
+                </li>
+            </ul>
+        </div>
+        <div class="infoBlock-help users-found">
+            <p>Visit the <a href="{% url 'bulk_site_creation:audit' %}">site creator audit log</a> to view previously created Canvas course sites.</p>
+        </div>
+    </main>
+</body>
+{% endblock body %}

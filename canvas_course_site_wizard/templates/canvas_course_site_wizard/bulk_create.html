@@ -1,0 +1,108 @@
+{% extends "icommons_ui/base_ext.html" %}
+
+{% block page_title %} Canvas Course Site Wizard {% endblock page_title %}
+
+{% block stylesheet %}
+{{ block.super }}
+<style>
+    tr:nth-child(even) {background: #CCC}
+    tr:nth-child(odd) {background: #FFF}
+</style>
+{% endblock %}
+
+{% block content %}
+
+    <h3>{{term}}</h3>
+
+    <div id="messages" class="alert alert-success alert-dismissible hidden fade in" role="alert">
+        <button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <div id="messages-text" class="alert-text"></div>
+    </div>
+    <div id="errors" class="alert alert-danger alert-dismissible hidden fade in" role="alert">
+        <button type="button" class="close" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <div id="errors-text" class="alert-text"></div>
+    </div>
+
+    <div class="well well-lg">
+        School: {{ term.school.school_id }}<br />
+        Courses in term: {{ total_courses }}<br />
+        Courses in Canvas: {{ canvas_courses }}<br />
+        Courses in iSites: {{ isites_courses}}<br />
+        External: {{ external }}<br />
+        Not Created: {{ not_created }}
+    </div>
+
+    <p>
+        <button id="bulk-create-btn" type="button"  class="btn btn-primary {% if is_job_in_progress %} disabled {% endif %}">Bulk Create Courses</button>
+        {% if is_job_in_progress %}
+        There is a bulk creation job for this term in progress
+        {% endif %}
+    </p>
+
+    {% if bulk_jobs %}
+    <table id="job-table" class="table">
+        <tr>
+            <th>ID</th>
+            <th>Job Status</th>
+            <th>Create On</th>
+            <th>Created By</th>
+            <th>Updated On</th>
+        </tr>
+        {% for job in bulk_jobs %}
+        <tr>
+            <td>{{job.id}}</td>
+            <td>{{job.status}}</td>
+            <td>{{job.created_at}}</td>
+            <td>{{job.created_by_user_id}}</td>
+            <td>{{job.updated_at}}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+        <p>There are currently no jobs in process or complete.</p>
+    {% endif %}
+
+{% endblock content %}
+
+{% block javascript %}
+{{ block.super }}
+
+    <script type="text/javascript">
+        $(document).ready(function(){
+            function updateAlertsWithJsonResponse(json) {
+                $.each(json, function(key, value){
+                    var $alertDiv = (key == 'success') ? $("#messages") : $("#errors")
+                    $alertDiv.find('.alert-text').append('<p>' + value + '</p>');
+                    $alertDiv.removeClass('hidden');
+                });
+            }
+
+            $('.close').on('click', function() {
+                $(this).parent().addClass('hidden');
+                $(this).siblings('.alert-text').empty()
+            });
+
+            $('#bulk-create-btn').click(function(){
+                $(this).prop('disabled', true);
+                var url = "{% url 'ccsw-bulk-create' term.term_id %}";
+                var ajax_req = $.ajax({
+                    url: url,
+                    type: "POST",
+                    dataType: "json",
+                    data: {
+                        'term_id': {{ term.term_id }},
+                        'school_id': '{{ term.school.school_id }}',
+                        'csrfmiddlewaretoken' : '{{ csrf_token }}'
+                    }
+                }).done(function(json) {
+                    updateAlertsWithJsonResponse(json);
+                }).fail(function(jqXHR) {
+                    updateAlertsWithJsonResponse(jqXHR.responseJSON);
+                });
+                // reload the page to show the new status row
+                location.reload();
+            });
+        });
+    </script>
+{% endblock %}
+
