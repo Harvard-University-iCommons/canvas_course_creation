@@ -1,7 +1,0 @@
-#!/bin/bash
-# This hook is run after this virtualenv is deactivated.
-
-unset DJANGO_SETTINGS_MODULE
-unset DJANGO_DB_PASSWORD
-unset CIPHER_KEY
-unset DJANGO_SECRET_KEY

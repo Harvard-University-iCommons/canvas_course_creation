@@ -1,5 +1,5 @@
 """
-Django settings for icommons_lti_tools project.
+Django settings for canvas_course_creation project.
 
 For more information on this file, see
 https://docs.djangoproject.com/en/1.6/topics/settings/
@@ -57,6 +57,7 @@ End path stuff
 # THESE ADDRESSES WILL RECEIVE EMAIL ABOUT CERTAIN ERRORS!
 ADMINS = SECURE_SETTINGS.get('admins')
 
+
 # This is the address that emails will be sent "from"
 SERVER_EMAIL = 'iCommons LTI Tools <icommons-bounces@harvard.edu>'
 
@@ -89,11 +90,6 @@ DATABASE_APPS_MAPPING = {
     'auth': 'default',
     'contenttypes': 'default',
     'sessions': 'default',
-    'student_locations': 'default',
-    'lecture_video': 'termtool',
-    'reserves_list': 'termtool',
-    'add_people': 'termtool',
-    'course_add_people': 'termtool',
 }
 
 DATABASE_MIGRATION_WHITELIST = ['default']
@@ -103,7 +99,7 @@ DATABASE_ROUTERS = ['icommons_common.routers.DatabaseAppsRouter', ]
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': SECURE_SETTINGS.get('db_default_name', 'icommons_lti_tools'),
+        'NAME': SECURE_SETTINGS.get('db_default_name', 'canvas_course_creation'),
         'USER': SECURE_SETTINGS.get('db_default_user', 'postgres'),
         'PASSWORD': SECURE_SETTINGS.get('db_default_password'),
         'HOST': SECURE_SETTINGS.get('db_default_host', '127.0.0.1'),
@@ -137,7 +133,7 @@ CACHES = {
             'PARSER_CLASS': 'redis.connection.HiredisParser'
         },
         'TIMEOUT': 60 * 20,  # 20 minutes
-        'KEY_PREFIX': 'icommons_lti_tools'
+        'KEY_PREFIX': 'canvas_course_creation'
     },
 }
 
@@ -166,14 +162,9 @@ INSTALLED_APPS = (
     'icommons_ui',
     'canvas_course_site_wizard',
     'djangular',
-    'lecture_video',
     'crispy_forms',
-    'reserves_list',
-    'student_locations',
-    'add_people',
-    'course_add_people',
     'bulk_site_creation',
-    'tools_usage'
+
 )
 
 MIDDLEWARE_CLASSES = (
@@ -199,9 +190,9 @@ CRISPY_TEMPLATE_PACK = 'bootstrap3'
 
 LOGIN_URL = reverse_lazy('lti_auth_error')
 
-ROOT_URLCONF = 'icommons_lti_tools.urls'
+ROOT_URLCONF = 'canvas_course_creation.urls'
 
-WSGI_APPLICATION = 'icommons_lti_tools.wsgi.application'
+WSGI_APPLICATION = 'canvas_course_creation.wsgi.application'
 
 
 # Internationalization
@@ -251,7 +242,7 @@ TEMPLATES = [
 
 LTI_OAUTH_CREDENTIALS = SECURE_SETTINGS.get('lti_oauth_credentials', None)
 
-CANVAS_URL = SECURE_SETTINGS.get('canvas_url', 'https://canvas.harvard.edu')
+CANVAS_URL = SECURE_SETTINGS.get('canvas_url', 'https://canvas.icommons.harvard.edu')
 
 CANVAS_SDK_SETTINGS = {
     'auth_token': SECURE_SETTINGS.get('canvas_token', None),
@@ -288,52 +279,6 @@ BULK_COURSE_CREATION = {
                                             'created.',
 }
 
-SECTIONS_TOOL = {
-    'TEST_STUDENT_ROLE': 'StudentViewEnrollment'
-}
-
-RESERVES_CONFIG = {
-    'ISITES_TOOL_URL': 'http://isites.harvard.edu/icb/icb.do?keyword=reserves&pageid=icb.page.topiceditgeneral.icb.topic1452049.icb.page.inlinecontent.icb.page686958.icb.page686958&pageContentId=icb.pagecontent1505871&view=edit&viewParam_courseInstanceId={0}',
-    'RESERVES_URL': 'http://webservices.lib.harvard.edu/ecru/v2/readings/courses/',
-    'RESERVES_ITEM_URL': 'http://webservices.lib.harvard.edu/ecru/v2/readings/',
-}
-
-STUDENT_LOCATIONS_TOOL = {
-    'google_map_api_v3_key': SECURE_SETTINGS.get('google_map_api_v3_key'),
-}
-
-LECTURE_VIDEO_TOOL = {
-    'DVS_API_HOST': 'http://tool2.isites.harvard.edu:8937',
-    'JW_PLAYER_KEY': SECURE_SETTINGS.get('jwplayerkey', None),
-    'CACHE_TIMEOUT': SECURE_SETTINGS.get('lecture_video_cache_timeout', 60 * 60 * 2),  # Default to 2 hours
-    'API_CALL_TIMEOUT': 15,  # 15 seconds
-}
-
-TOOLS_USAGE = {
-    's3_bucket': SECURE_SETTINGS.get('tools_usage_s3_bucket', ''),
-    's3_key_template': 'external_tools/external_tools_{}.html',
-    's3_url_expiration_secs': SECURE_SETTINGS.get(
-        'tools_usage_s3_url_expiration_secs', 60
-    ),
-}
-
-
-CAP_MSGS = {
-    'lti_request': 'There was a problem fulfilling your request. Please contact HUIT support.',
-    'no_dir_member_chosen': 'You must choose at least one directory record.',
-    'no_role_selected': 'You must choose a role for each user you select.',
-    'no_user_selected': 'You must select a user for each role you choose.',
-    'success': 'Successful !!!',
-
-}
-
-CAP_BADGE_LABELS = {
-    'huid': 'HUID',
-    'xid': 'XID',
-    'library': 'LIBRARY',
-    'other': 'OTHER',
-}
-
 _LOG_ROOT = SECURE_SETTINGS.get('log_root', '')  # Default to current directory
 
 LOGGING = {
@@ -362,13 +307,7 @@ LOGGING = {
         'logfile': {
             'level': 'INFO',
             'class': 'logging.handlers.WatchedFileHandler',
-            'filename': join(_LOG_ROOT, 'django-icommons_lti_tools.log'),
-            'formatter': 'verbose',
-        },
-        'manage_people_audit_log_file': {
-            'level': 'DEBUG',
-            'class': 'logging.handlers.WatchedFileHandler',
-            'filename': join(_LOG_ROOT, 'django-manage_people_audit.log'),
+            'filename': join(_LOG_ROOT, 'django_canvas_course_creation.log'),
             'formatter': 'verbose',
         },
         'console': {
@@ -400,31 +339,6 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': True,
         },
-        'lecture_video': {
-            'handlers': ['console', 'logfile'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-        'reserves_list': {
-            'handlers': ['console', 'logfile'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-        'student_locations': {
-            'handlers': ['console', 'logfile'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-        'add_user': {
-            'handlers': ['console', 'logfile'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-        'wordpress': {
-            'handlers': ['console', 'logfile'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
         'django_auth_lti': {
             'handlers': ['console', 'logfile'],
             'level': 'DEBUG',
@@ -450,23 +364,8 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': True,
         },
-        'add_people': {
-            'handlers': ['console', 'logfile'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-        'course_add_people': {
-            'handlers': ['console', 'logfile'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
         'bulk_site_creation': {
             'handlers': ['console', 'logfile'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-        'manage_people_audit_log': {
-            'handlers': ['console', 'manage_people_audit_log_file'],
             'level': 'DEBUG',
             'propagate': True,
         },

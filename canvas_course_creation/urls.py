@@ -14,8 +14,11 @@ Including another URLconf
     2. Add a URL to urlpatterns:  url(r'^blog/', include(blog_urls))
 """
 from django.conf.urls import include, url
-from django.contrib import admin
+#from django.contrib import admin
+from canvas_course_site_wizard import urls as ccsw_urls
 
 urlpatterns = [
-    url(r'^admin/', include(admin.site.urls)),
+    #url(r'^admin/', include(admin.site.urls)),
+    url(r'^course_creation/bulk_site_creation/', include('bulk_site_creation.urls', namespace='bulk_site_creation')),
+    url(r'^course_creation/canvas-course-site-wizard/', include(ccsw_urls)),
 ]
