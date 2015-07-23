@@ -339,7 +339,7 @@ LOGGING = {
         'logfile': {
             'level': 'INFO',
             'class': 'logging.handlers.WatchedFileHandler',
-            'filename': join(_LOG_ROOT, 'django_canvas_course_creation.log'),
+            'filename': join(_LOG_ROOT, 'course_creation.log'),
             'formatter': 'verbose',
         },
         'console': {
@@ -371,21 +371,6 @@ LOGGING = {
             'level': 'ERROR',
             'propagate': True,
         },
-        'django_auth_lti': {
-            'handlers': ['console', 'logfile'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-        'icommons_common': {
-            'handlers': ['console', 'logfile'],
-            'level': 'DEBUG',
-            'propagate': True,
-        },
-        'canvas_course_site_wizard': {
-            'handlers': ['console', 'logfile'],
-            'level': 'INFO',
-            'propagate': True,
-        },
         'oauth2': {
             'handlers': ['console', 'logfile'],
             'level': 'DEBUG',
@@ -396,10 +381,27 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': True,
         },
+        'django_auth_lti': {
+            'handlers': ['console', 'logfile'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+        'icommons_common': {
+            'handlers': ['console', 'logfile'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
         'bulk_site_creation': {
             'handlers': ['console', 'logfile'],
             'level': 'DEBUG',
             'propagate': True,
         },
+        'canvas_course_site_wizard': {
+            'handlers': ['console', 'logfile'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+
+
     }
 }
