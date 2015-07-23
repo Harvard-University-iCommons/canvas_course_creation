@@ -208,7 +208,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.6/howto/static-files/
 
-STATIC_URL = '/lti_tools/static/'
+STATIC_URL = '/course_creation/static/'
 
 # Additional locations of static files
 STATICFILES_DIRS = (
@@ -241,6 +241,12 @@ LTI_OAUTH_CREDENTIALS = SECURE_SETTINGS.get('lti_oauth_credentials', None)
 
 CANVAS_URL = SECURE_SETTINGS.get('canvas_url', 'https://canvas.harvard.edu')
 
+ISITES_LMS_URL = ''
+
+CANVAS_SITE_SETTINGS = {
+    'base_url': CANVAS_URL + '/',
+}
+
 CANVAS_SDK_SETTINGS = {
     'auth_token': SECURE_SETTINGS.get('canvas_token', None),
     'base_api_url': CANVAS_URL + '/api',
@@ -259,15 +265,9 @@ ICOMMONS_COMMON = {
     },
 }
 
-ISITES_LMS_URL = ''
-
-CANVAS_SITE_SETTINGS = {
-    'base_url': CANVAS_URL + '/',
-}
-
-COURSE_WIZARD = {
-    'TERM_TOOL_BASE_URL' : 'https://isites.harvard.edu',
-}
+# COURSE_WIZARD = {
+#     'TERM_TOOL_BASE_URL' : 'https://isites.harvard.edu',
+# }
 
 CANVAS_EMAIL_NOTIFICATION = {
     'from_email_address': 'icommons-bounces@harvard.edu',
@@ -304,6 +304,7 @@ BULK_COURSE_CREATION = {
                                             'created.',
 }
 
+
 # Background task PID (lock) files
 #   * If created in another directory, ensure the directory exists in runtime environment
 PROCESS_ASYNC_JOBS_PID_FILE = 'process_async_jobs.pid'
@@ -311,8 +312,8 @@ FINALIZE_BULK_CREATE_JOBS_PID_FILE = 'finalize_bulk_create_jobs.pid'
 
 _LOG_ROOT = SECURE_SETTINGS.get('log_root', '')  # Default to current directory
 
-# Logging
 
+# Logging
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': True,
