@@ -13,6 +13,7 @@ from icommons_ui.mixins import CustomErrorPageMixin
 from .exceptions import NoTemplateExistsForSchool
 from .models import CanvasCourseGenerationJob
 from braces.views import LoginRequiredMixin
+from django.core.urlresolvers import reverse_lazy
 
 logger = logging.getLogger(__name__)
 
@@ -21,6 +22,7 @@ class CanvasCourseSiteCreateView(LoginRequiredMixin, CourseSiteCreationAllowedMi
     Serves up the canvas course site creation wizard on GET and creates the
     course site on POST.
     """
+    login_url = reverse_lazy('pin:login')
     template_name = "canvas_course_site_wizard/canvas_wizard.html"
     # This is currently the project-level 500 error page, which has RenderableException logic
     custom_error_template_name = "500.html"
@@ -52,6 +54,7 @@ class CanvasCourseSiteStatusView(LoginRequiredMixin, DetailView):
     template_name = "canvas_course_site_wizard/status.html"
     model = CanvasCourseGenerationJob
     context_object_name = 'content_migration_job'
+    login_url = reverse_lazy('pin:login')
 
     def get_context_data(self, **kwargs):
         """

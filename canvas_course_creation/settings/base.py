@@ -171,22 +171,18 @@ MIDDLEWARE_CLASSES = (
     'djangular.middleware.DjangularUrlMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    # 'django.middleware.csrf.CsrfViewMiddleware',
-
-    # 'django.contrib.auth.middleware.AuthenticationMiddleware',
     'cached_auth.Middleware',
-
     'django_auth_lti.middleware_patched.MultiLTILaunchAuthMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-    # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
 
 AUTHENTICATION_BACKENDS = (
+    'icommons_common.auth.backends.PINAuthBackend',
     'django_auth_lti.backends.LTIAuthBackend',
+
 )
 
 CRISPY_TEMPLATE_PACK = 'bootstrap3'
-
 
 LOGIN_URL = reverse_lazy('lti_auth_error')
 
@@ -235,6 +231,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'icommons_common.auth.context_processors.pin_context',
             ],
         },
     },
@@ -242,7 +239,7 @@ TEMPLATES = [
 
 LTI_OAUTH_CREDENTIALS = SECURE_SETTINGS.get('lti_oauth_credentials', None)
 
-CANVAS_URL = SECURE_SETTINGS.get('canvas_url', 'https://canvas.icommons.harvard.edu')
+CANVAS_URL = SECURE_SETTINGS.get('canvas_url', 'https://canvas.harvard.edu')
 
 CANVAS_SDK_SETTINGS = {
     'auth_token': SECURE_SETTINGS.get('canvas_token', None),
@@ -268,6 +265,34 @@ CANVAS_SITE_SETTINGS = {
     'base_url': CANVAS_URL + '/',
 }
 
+COURSE_WIZARD = {
+    'TERM_TOOL_BASE_URL' : 'https://isites.harvard.edu',
+}
+
+CANVAS_EMAIL_NOTIFICATION = {
+    'from_email_address': 'icommons-bounces@harvard.edu',
+    'support_email_address': 'tlt_support@harvard.edu',
+    'course_migration_success_subject': 'Course site is ready',
+    'course_migration_success_body': 'Success! \nYour new Canvas course site has been created and is ready for you at:\n'+
+            ' {0} \n\n Here are some resources for getting started with your site:\n http://tlt.harvard.edu/getting-started#teachingstaff',
+
+    'course_migration_failure_subject': 'Course site not created',
+    'course_migration_failure_body': 'There was a problem creating your course site in Canvas.\n'+
+            'Your local academic support staff has been notified and will be in touch with you.\n\n'+
+            'If you have questions please contact them at:\n'+
+            ' FAS: atg@fas.harvard.edu\n'+
+            ' DCE/Summer: AcademicTechnology@dce.harvard.edu\n'+
+            ' (Let them know that course site creation failed for sis_course_id: {0} ',
+
+    'support_email_subject_on_failure': 'Course site not created',
+    'support_email_body_on_failure': 'There was a problem creating a course site in Canvas via the wizard.\n\n'+
+            'Course site creation failed for sis_course_id: {0}\n'+
+            'User: {1}\n'+
+            '{2}\n'+
+            'Environment: {3}\n',
+    'environment' : 'Production',
+}
+
 BULK_COURSE_CREATION = {
     'log_long_running_jobs': True,
     'long_running_age_in_minutes': 30,
@@ -279,7 +304,14 @@ BULK_COURSE_CREATION = {
                                             'created.',
 }
 
+# Background task PID (lock) files
+#   * If created in another directory, ensure the directory exists in runtime environment
+PROCESS_ASYNC_JOBS_PID_FILE = 'process_async_jobs.pid'
+FINALIZE_BULK_CREATE_JOBS_PID_FILE = 'finalize_bulk_create_jobs.pid'
+
 _LOG_ROOT = SECURE_SETTINGS.get('log_root', '')  # Default to current directory
+
+# Logging
 
 LOGGING = {
     'version': 1,
