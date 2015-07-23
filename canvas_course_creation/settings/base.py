@@ -82,11 +82,12 @@ ALLOWED_HOSTS = ['*']
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 
-# Database
+# Database config
 
 DATABASE_APPS_MAPPING = {
     'icommons_common': 'termtool',
     'canvas_course_site_wizard': 'termtool',
+    'bulk_site_creation' : 'default',
     'auth': 'default',
     'contenttypes': 'default',
     'sessions': 'default',
@@ -120,7 +121,7 @@ DATABASES = {
 }
 
 
-# Cache
+# Cache config
 
 REDIS_HOST = SECURE_SETTINGS.get('redis_host', '127.0.0.1')
 REDIS_PORT = SECURE_SETTINGS.get('redis_port', 6379)
@@ -264,10 +265,6 @@ ICOMMONS_COMMON = {
         'Authorization': 'Bearer ' + SECURE_SETTINGS.get('canvas_token', 'canvas_token_missing_from_config')
     },
 }
-
-# COURSE_WIZARD = {
-#     'TERM_TOOL_BASE_URL' : 'https://isites.harvard.edu',
-# }
 
 CANVAS_EMAIL_NOTIFICATION = {
     'from_email_address': 'icommons-bounces@harvard.edu',
