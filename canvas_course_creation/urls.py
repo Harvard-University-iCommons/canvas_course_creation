@@ -23,3 +23,8 @@ urlpatterns = [
     url(r'^course_creation/bulk_site_creation/', include('bulk_site_creation.urls', namespace='bulk_site_creation')),
     url(r'^course_creation/canvas-course-site-wizard/', include(ccsw_urls)),
 ]
+
+handler403 = 'icommons_ext_tools.views.handler403'
+handler404 = 'icommons_ext_tools.views.handler404'
+handler500 = 'icommons_ext_tools.views.handler500'
+
