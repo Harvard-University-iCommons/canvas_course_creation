@@ -8,10 +8,10 @@ from .controller import (
     finalize_new_canvas_course,
     get_canvas_course_url
 )
-from .mixins import CourseSiteCreationAllowedMixin
+from canvas_course_site_wizard.mixins import CourseSiteCreationAllowedMixin
 from icommons_ui.mixins import CustomErrorPageMixin
-from .exceptions import NoTemplateExistsForSchool
-from .models import CanvasCourseGenerationJob
+from canvas_course_site_wizard.exceptions import NoTemplateExistsForSchool
+from canvas_course_site_wizard.models import CanvasCourseGenerationJob
 from braces.views import LoginRequiredMixin
 from django.core.urlresolvers import reverse_lazy
 
@@ -51,10 +51,10 @@ class CanvasCourseSiteCreateView(LoginRequiredMixin, CourseSiteCreationAllowedMi
 
 class CanvasCourseSiteStatusView(LoginRequiredMixin, DetailView):
     """ Displays status of course creation job, including progress and result of template copy and finalization """
+    login_url = reverse_lazy('pin:login')
     template_name = "canvas_course_site_wizard/status.html"
     model = CanvasCourseGenerationJob
     context_object_name = 'content_migration_job'
-    login_url = reverse_lazy('pin:login')
 
     def get_context_data(self, **kwargs):
         """

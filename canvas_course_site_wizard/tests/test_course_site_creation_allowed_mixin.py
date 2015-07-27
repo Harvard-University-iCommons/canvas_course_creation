@@ -42,7 +42,7 @@ class CourseSiteCreationAllowedMixinTest(TestCase):
     @patch('canvas_course_site_wizard.mixins.super', create=True)
     def test_dispatch_calls_super_when_staff_and_not_admin(self, super_mock, *args):
         self.mixin.dispatch(self.request)
-        super_mock.assert_called()
+        assert super_mock.called
 
     @patch.object(CourseSiteCreationAllowedMixin, 'get_object')
     @patch.object(CourseSiteCreationAllowedMixin, 'is_current_user_member_of_course_staff', return_value=False)
@@ -50,7 +50,7 @@ class CourseSiteCreationAllowedMixinTest(TestCase):
     @patch('canvas_course_site_wizard.mixins.super', create=True)
     def test_dispatch_calls_super_when_admin_and_not_staff(self, super_mock, *args):
         self.mixin.dispatch(self.request)
-        super_mock.assert_called()
+        assert super_mock.called
 
     @patch.object(CourseSiteCreationAllowedMixin, 'get_object')
     @patch.object(CourseSiteCreationAllowedMixin, 'is_current_user_member_of_course_staff', return_value=True)
@@ -58,4 +58,4 @@ class CourseSiteCreationAllowedMixinTest(TestCase):
     @patch('canvas_course_site_wizard.mixins.super', create=True)
     def test_dispatch_calls_super_when_admin_and_staff(self, super_mock, *args):
         self.mixin.dispatch(self.request)
-        super_mock.assert_called()
+        assert super_mock.called

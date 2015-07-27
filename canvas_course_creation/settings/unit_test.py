@@ -67,7 +67,7 @@ DATABASE_ROUTERS = []
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': 'icommons_ext_tools.db.sqlite3',
+        'NAME': 'canvas_course_creation.db.sqlite3',
     },
 }
 

@@ -5,8 +5,13 @@ Process the Content Migration jobs in the CanvasContentMigrationJob table.
 from django.core.management.base import NoArgsCommand
 from django.conf import settings
 from django.db.models import Q
-from canvas_course_site_wizard.controller import (get_canvas_user_profile, send_email_helper, send_failure_email,
-                                                  finalize_new_canvas_course)
+from canvas_course_site_wizard.controller import (
+    get_canvas_user_profile,
+    send_email_helper,
+    send_failure_email,
+    finalize_new_canvas_course,
+    update_syllabus_body
+)
 from canvas_course_site_wizard.models import CanvasCourseGenerationJob
 from canvas_sdk import client
 from icommons_common.canvas_utils import SessionInactivityExpirationRC
@@ -81,10 +86,13 @@ class Command(NoArgsCommand):
 
                     logger.debug('Workflow state updated, starting finalization process...')
                     try:
-                        canvas_course_url = finalize_new_canvas_course(job.canvas_course_id,
-                                                                   job.sis_course_id,
-                                                                   'sis_user_id:%s' % job.created_by_user_id,
-                                                                   job.bulk_job_id)
+                        update_syllabus_body(job)
+                        canvas_course_url = finalize_new_canvas_course(
+                            job.canvas_course_id,
+                            job.sis_course_id,
+                            'sis_user_id:%s' % job.created_by_user_id,
+                            job.bulk_job_id
+                        )
                     except Exception as e:
                         # Catch exceptions from finalize method to set the workflow_state to STATUS_FINALIZE_FAILED
                         # and then re raise it so that generic tasks like tech logger, email generation will continue

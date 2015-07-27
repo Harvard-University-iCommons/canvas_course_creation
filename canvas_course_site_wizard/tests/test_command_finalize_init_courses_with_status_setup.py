@@ -66,7 +66,9 @@ class FinalizeInitCoursesWithStatusSetupCommandTests(TestCase):
         create_course_calls = []
         template_copy_calls = []
         for index, course in enumerate(self.courses):
-            create_course_calls.append(call(course, self.user_id, bulk_job_id=self.bulk_job_id))
+            create_course_calls.append(
+                call(course, self.user_id, bulk_job=BulkCanvasCourseCreationJob(id=self.bulk_job_id))
+            )
             create_course_calls.append(ANY)
             template_copy_calls.append(
                 call(ANY, ANY, self.user_id, course_job_id=index,
@@ -117,24 +119,17 @@ class FinalizeInitCoursesWithStatusSetupCommandTests(TestCase):
         _init_courses_with_status_setup()
         mock_logger.assert_has_calls(content_migration_error_calls)
 
-
-    @patch('canvas_course_site_wizard.models.'
-           'CanvasCourseGenerationJob.update_workflow_state')
-    @patch('canvas_course_site_wizard.management.commands.finalize_bulk_create_jobs.logger.exception')
-
+    @patch('canvas_course_site_wizard.management.commands.finalize_bulk_create_jobs.BulkJob.objects.filter')
     @patch('canvas_course_site_wizard.management.commands.finalize_bulk_create_jobs.'
            'CanvasCourseGenerationJob.objects.filter_setup_for_bulkjobs')
-    def test_that_workflow_state_is_properly_updated_when_no_template_exists(self, mock_getjobs, mock_job_update, mock_logger, get_course_data, create_canvas_course, start_course_template_copy):
+    def test_that_workflow_state_is_properly_updated_when_no_template_exists(self, mock_getjobs, mock_filter_bulk_jobs, get_course_data, create_canvas_course, start_course_template_copy):
         """
-        test that logger is called when there is no course template
+        workflow state of CCG job should be updated to setup_failed
+         template is expected but not found at run time
         """
-        mock_getjobs.return_value = self.cm_jobs
-        template_calls = []
-        finalize_calls = []
-        for course in self.courses:
-            template_calls.append(call('no template for course instance id %s' % course))
+        mock_getjobs.return_value = [self.cm_jobs[1]]
+        mock_filter_bulk_jobs.return_value = self.bulk_jobs
         start_course_template_copy.side_effect = NoTemplateExistsForSchool(self.school_code)
         _init_courses_with_status_setup()
         # make sure that the job's status is updated to STATUS_PENDING_FINALIZE
-        mock_job_update.assertCalledWith(CanvasCourseGenerationJob.STATUS_PENDING_FINALIZE)
-
+        self.assertEqual(self.cm_jobs[1].workflow_state, CanvasCourseGenerationJob.STATUS_SETUP_FAILED)
