@@ -30,6 +30,7 @@ def mock_user_profile(profile_mock, return_value='a@a.com'):
     'canvas_course_site_wizard.management.commands.process_async_jobs',
     send_failure_email=DEFAULT,
     logger=DEFAULT,
+    update_syllabus_body=DEFAULT,
     finalize_new_canvas_course=DEFAULT,
     send_email_helper=DEFAULT,
     get_canvas_user_profile=DEFAULT,
@@ -138,7 +139,7 @@ class CommandsTestCase(TestCase):
         start_job_with_noargs()
         self.assertTrue(mock_logger.called)
 
-    def test_process_async_jobs_on_failed_status(self, client, get_canvas_user_profile, send_email_helper, tech_logger,
+    def test_process_async_jobs_on_failed_status(self, client, get_canvas_user_profile, send_failure_email, tech_logger,
             **kwargs):
         """
         test that the send_failure_email, get_canvas_user_profile helper method, and
@@ -150,7 +151,7 @@ class CommandsTestCase(TestCase):
 
         start_job_with_noargs()
         get_canvas_user_profile.assert_called_with(self.created_by_user_id)
-        send_email_helper.assert_called_with_any(ANY, ANY)
+        send_failure_email.assert_called_with(ANY, ANY)
         self.assertEqual(tech_logger.error.call_count, 1)
 
     def test_process_async_jobs_sends_failure_email_when_error_in_finalize_method(self, client,

@@ -203,7 +203,7 @@ class SISCourseDataMixinTest(TestCase):
         '''
         self.course_data.save = self.get_sync_to_canvas_save_mock()
         result = self.course_data.set_sync_to_canvas(self.sync_flag)
-        self.course_data.save.assert_called()
+        assert self.course_data.save.called
       
     def test_set_sync_to_canvas_calls_save_with_correct_params(self):
         '''

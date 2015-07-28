@@ -304,11 +304,7 @@ class BulkCanvasCourseCreationJobTests(TestCase):
         sis_department_id = 1111
         created_by_user_id = '10564158'
         course_instance_ids = [1, 2, 3]
-        ci_filter_mock.return_value = [
-            CourseInstance(course_instance_id=1),
-            CourseInstance(course_instance_id=2),
-            CourseInstance(course_instance_id=3)
-        ]
+        ci_filter_mock.return_value = Mock(**{'values_list.return_value': course_instance_ids})
 
         bulk_job = BulkJob.objects.create_bulk_job(
             school_id=school_id,
@@ -317,6 +313,8 @@ class BulkCanvasCourseCreationJobTests(TestCase):
             created_by_user_id=created_by_user_id
         )
         ci_filter_mock.assert_called_with(
+            exclude_from_isites=0,
+            canvas_course_id__isnull=True,
             term_id=sis_term_id,
             course__school=school_id,
             course__departments=sis_department_id

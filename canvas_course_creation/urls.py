@@ -24,7 +24,7 @@ urlpatterns = [
     url(r'^course_creation/canvas-course-site-wizard/', include(ccsw_urls)),
 ]
 
-handler403 = 'icommons_ext_tools.views.handler403'
-handler404 = 'icommons_ext_tools.views.handler404'
-handler500 = 'icommons_ext_tools.views.handler500'
+handler403 = 'canvas_course_creation.views.handler403'
+handler404 = 'canvas_course_creation.views.handler404'
+handler500 = 'canvas_course_creation.views.handler500'
 

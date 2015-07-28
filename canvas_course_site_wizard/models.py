@@ -1,8 +1,14 @@
+import logging
+import time
+
 from datetime import datetime, timedelta
 from django.db.models import Q
 from icommons_common.models import CourseInstance, CourseSite, SiteMap, SiteMapType
 from django.conf import settings
 from django.db import models
+
+
+logger = logging.getLogger(__name__)
 
 
 class SISCourseDataMixin(object):
@@ -285,6 +291,7 @@ class CanvasSchoolTemplate(models.Model):
     template_id = models.IntegerField()
     school_id = models.CharField(max_length=10, db_index=True)
     is_default = models.BooleanField(default=False)
+    include_course_info = models.BooleanField(default=False)
 
     class Meta:
         db_table = u'canvas_school_template'
@@ -319,12 +326,22 @@ class BulkCanvasCourseCreationJobManager(models.Manager):
         bulk_job.save()
 
         if not course_instance_ids:
-            filters = {'term_id': sis_term_id, 'course__school': school_id}
+            filters = {
+                'canvas_course_id__isnull': True,
+                'exclude_from_isites': 0,
+                'term_id': sis_term_id,
+                'course__school': school_id
+            }
             if sis_department_id:
                 filters['course__departments'] = sis_department_id
             elif sis_course_group_id:
                 filters['course__course_groups'] = sis_course_group_id
-            course_instance_ids = [ci.course_instance_id for ci in CourseInstance.objects.filter(**filters)]
+            course_instance_ids = [
+                ci_id for ci_id in CourseInstance.objects.filter(**filters).values_list(
+                    'course_instance_id',
+                    flat=True
+                )
+            ]
 
         course_jobs = []
         for ci_id in course_instance_ids:
@@ -335,7 +352,9 @@ class BulkCanvasCourseCreationJobManager(models.Manager):
             )
             course_jobs.append(course_job)
 
+        start = time.time()
         CanvasCourseGenerationJob.objects.bulk_create(course_jobs)
+        logger.info("Created %d CanvasCourseGenerationJobs in %d", len(course_jobs), (time.time() - start) * 1000)
 
         bulk_job.status = BulkCanvasCourseCreationJob.STATUS_PENDING
         bulk_job.save(update_fields=['status'])
