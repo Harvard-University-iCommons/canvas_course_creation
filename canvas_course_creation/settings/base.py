@@ -151,6 +151,15 @@ CACHES = {
         'TIMEOUT': 60 * 20,  # 20 minutes
         'KEY_PREFIX': 'canvas_course_creation'
     },
+    'shared': {
+        'BACKEND': 'redis_cache.RedisCache',
+        'LOCATION': "redis://%s:%s/0" % (REDIS_HOST, REDIS_PORT),
+        'OPTIONS': {
+            'PARSER_CLASS': 'redis.connection.HiredisParser'
+        },
+        'KEY_PREFIX': 'tlt_shared',
+        'TIMEOUT': SECURE_SETTINGS.get('default_cache_timeout_secs', 300),
+    }
 }
 
 
