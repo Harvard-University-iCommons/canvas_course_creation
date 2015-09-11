@@ -144,7 +144,7 @@ REDIS_PORT = SECURE_SETTINGS.get('redis_port', 6379)
 CACHES = {
     'default': {
         'BACKEND': 'redis_cache.RedisCache',
-        'LOCATION': "%s:%s" % (REDIS_HOST, REDIS_PORT),
+        'LOCATION': "redis://%s:%s/0" % (REDIS_HOST, REDIS_PORT),
         'OPTIONS': {
             'PARSER_CLASS': 'redis.connection.HiredisParser'
         },
