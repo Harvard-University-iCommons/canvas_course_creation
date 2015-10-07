@@ -18,13 +18,12 @@ from canvas_course_site_wizard import urls as ccsw_urls
 
 urlpatterns = [
     #url(r'^admin/', include(admin.site.urls)),
-    url(r'^course_creation/not_authorized/', 'icommons_ui.views.not_authorized', name="not_authorized"),
-    url(r'^course_creation/pin/', include('icommons_common.auth.urls', namespace="pin")),
-    url(r'^course_creation/bulk_site_creation/', include('bulk_site_creation.urls', namespace='bulk_site_creation')),
-    url(r'^course_creation/canvas-course-site-wizard/', include(ccsw_urls)),
+    url(r'^not_authorized/', 'icommons_ui.views.not_authorized', name="not_authorized"),
+    url(r'^pin/', include('icommons_common.auth.urls', namespace="pin")),
+    url(r'^bulk_site_creation/', include('bulk_site_creation.urls', namespace='bulk_site_creation')),
+    url(r'^canvas-course-site-wizard/', include(ccsw_urls)),
 ]
 
 handler403 = 'canvas_course_creation.views.handler403'
 handler404 = 'canvas_course_creation.views.handler404'
 handler500 = 'canvas_course_creation.views.handler500'
-
