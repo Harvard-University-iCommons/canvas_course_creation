@@ -1,9 +1,0 @@
-# stage environment requirements
-
-#includes the base.txt requirements needed in all environments
--r aws.txt
- 
-# below are requirements specific to the stage environment
-
-gunicorn
-

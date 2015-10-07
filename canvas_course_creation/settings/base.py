@@ -92,9 +92,6 @@ WSGI_APPLICATION = 'canvas_course_creation.wsgi.application'
 
 # This is the address that emails will be sent "from"
 SERVER_EMAIL = 'iCommons LTI Tools <icommons-bounces@harvard.edu>'
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'mailhost.harvard.edu'
-EMAIL_USE_TLS = True
 
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
@@ -168,9 +165,6 @@ CACHES = {
 SESSION_ENGINE = 'django.contrib.sessions.backends.cache'
 
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
-
-# Django defaults to False (as of 1.7)
-SESSION_COOKIE_SECURE = SECURE_SETTINGS.get('use_secure_cookies', False)
 
 # Internationalization
 # https://docs.djangoproject.com/en/1.6/topics/i18n/
